@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-counter-app
+spec:
+  replicas: 1  # Número de réplicas de la aplicación
+  selector:
+    matchLabels:
+      app: redis-counter-app
+  template:
+    metadata:
+      labels:
+        app: redis-counter-app
+    spec:
+      containers:
+      - name: redis-counter-app
+        image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${CIRCLE_SHA1}  # Imagen que se reemplaza dinámicamente
+        ports:
+        - containerPort: 5000  # Puerto donde la aplicación escucha
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data  # Ruta dentro del contenedor donde se montará el volumen
+        resources:
+          requests:
+            memory: "256Mi"  # Memoria solicitada
+            cpu: "250m"      # CPU solicitada
+          limits:
+            memory: "512Mi"  # Memoria máxima
+            cpu: "500m"      # CPU máxima
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-pvc  # Nombre del PVC que define el volumen persistente
