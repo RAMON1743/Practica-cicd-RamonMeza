@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-counter-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-counter-app
+  template:
+    metadata:
+      labels:
+        app: redis-counter-app
+    spec:
+      containers:
+      - name: redis-counter-app
+        image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${CIRCLE_SHA1}  # La imagen será reemplazada
+        ports:
+        - containerPort: 5000
