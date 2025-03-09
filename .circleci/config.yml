@@ -75,15 +75,28 @@ jobs:
           command: |
             # Eliminar el directorio 'manifests' si ya existe
             if [ -d "manifests" ]; then
+              echo "Eliminando el directorio 'manifests' existente."
               rm -rf manifests
             fi
             # Clonar el repositorio
+            echo "Clonando el repositorio de manifiestos..."
             git clone https://github.com/RAMON1743/app-practica-cicd-Ramon-Meza.git manifests
+
+      - run:
+          name: Verificar si el directorio 'manifests' fue clonado correctamente
+          command: |
+            if [ ! -d "manifests" ]; then
+              echo "Error: El directorio 'manifests' no fue clonado correctamente."
+              exit 1
+            fi
+            echo "Directorio 'manifests' clonado exitosamente."
+
       - run:
           name: Configurar identidad de Git
           command: |
             git config --global user.email "ramon.meza83@gmail.com"
             git config --global user.name "RAMON1743"
+
       - run:
           name: Verificar si el archivo deployment.yaml existe
           command: |
@@ -104,22 +117,27 @@ jobs:
               echo "Error: No se encontró el archivo deployment.yaml en 'manifests'."
               exit 1
             fi
+
       - run:
           name: Actualizar imagen en manifiestos con envsubst
           command: |
             # Asegurarse de estar en el directorio correcto
             cd manifests
             # Verificar contenido antes de usar envsubst
+            echo "Contenido original del archivo deployment.yaml:"
             cat deployment.yaml
 
             # Usar envsubst para reemplazar las variables en el archivo deployment.yaml
+            echo "Reemplazando variables con envsubst..."
             envsubst < deployment.yaml > deployment_updated.yaml
 
             # Verificar que la imagen haya sido actualizada
+            echo "Contenido actualizado de deployment_updated.yaml:"
             cat deployment_updated.yaml
 
             # Sobrescribir el archivo original con el actualizado
             mv deployment_updated.yaml deployment.yaml
+
       - run:
           name: Commit y Push de cambios
           command: |
