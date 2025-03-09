@@ -98,27 +98,6 @@ jobs:
             git config --global user.name "RAMON1743"
 
       - run:
-          name: Verificar si el archivo deployment.yaml existe
-          command: |
-            # Verificar la ubicación actual
-            echo "Directorio actual: $(pwd)"
-
-            # Cambiar al directorio 'manifests'
-            cd manifests || { echo "Error: No se pudo acceder al directorio 'manifests'"; exit 1; }
-
-            # Verificar el contenido del directorio 'manifests'
-            echo "Contenido de manifests:"
-            ls -l
-
-            # Verificar si el archivo 'deployment.yaml' está presente
-            if [ -f "deployment.yaml" ]; then
-              echo "Archivo deployment.yaml encontrado."
-            else
-              echo "Error: No se encontró el archivo deployment.yaml en 'manifests'."
-              exit 1
-            fi
-
-      - run:
           name: Actualizar imagen en manifiestos con envsubst
           command: |
             # Asegurarse de estar en el directorio correcto
